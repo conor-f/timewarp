@@ -1,3 +1,5 @@
+import re
+
 from datetime import (
     datetime,
     timedelta
@@ -11,7 +13,7 @@ class Timewarp():
         :param expression: The string describing the Timewarp object.
         :kwarg additive: Boolean to specify if we should start from 01/01/0001
                          or not. Default False.
-        :kwarg timezone: TODO: Should by pytz timezone object.
+        :kwarg timezone: TODO: Should be pytz timezone object.
         '''
         self.current_time_obj = datetime(1, 1, 1) if additive else datetime.now()
         self.update(expression)
@@ -20,11 +22,43 @@ class Timewarp():
         '''
         Given a Timewarp expression, return True if it is valid, False
         otherwise.
+        TODO: Refactor for speedup.
         :param expression: String of the expression
         :returns: Boolean
         '''
-        if not type(expression) is str:
+        if type(expression) is not str:
             return False
+
+        if expression == '':
+            return True
+
+        # Only some chars are allowed in the syntax:
+        valid_keywords = ['y', 'mon', 'w', 'd', 'h', 'm', 's']
+
+        valid_base_patterns = [
+            r'^@' + valid_keyword + '$' for valid_keyword in valid_keywords
+        ]
+
+        valid_base_patterns.extend([
+            r'^[+-]\d+' + valid_keyword + '$' for valid_keyword in valid_keywords
+        ])
+
+        valid_base_regex = '|'.join(valid_base_patterns)
+
+        expression_parts = re.split(r'([+@-])', expression)
+        expression_parts = [part for part in expression_parts if part != '']
+
+        parsed_expression = [
+            ''.join(expression_parts[i:i + 2]) for i in range(
+                0,
+                len(expression_parts),
+                2
+            )
+        ]
+
+        for part in parsed_expression:
+            if not re.match(valid_base_regex, part):
+                return False
 
         return True
 

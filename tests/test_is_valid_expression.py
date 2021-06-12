@@ -35,9 +35,30 @@ class IsValidExpressionTest(TestCase):
         ('compound year snap month snap', '@y@mon'),
         ('compound day snap hour snap', '@d@h'),
         ('compound week snap hour add', '@w+3h'),
-        ('compound second sub minute sub', '-1s-1min'),
-        ('compound full composition', '@y-1mon+2w@d-20h+30min@s-200s'),
+        ('compound second sub minute sub', '-1s-1m'),
+        ('compound full composition', '@y-1mon+2w@d-20h+30m@s-200s'),
     ])
-    def test_compound_expressions_are_valid(self, name, expression):
+    def test_valid_compound_expressions_are_valid(self, name, expression):
         timewarp_obj = Timewarp('')
         self.assertTrue(timewarp_obj.is_valid_expression(expression))
+
+    @parameterized.expand([
+        ('bad simple year snap', '@-y'),
+        ('bad simple month snap', '-@mon'),
+        ('bad simple week snap', 'w@w'),
+        ('bad simple day snap', '@dd'),
+        ('bad simple second add', '++1s'),
+        ('bad simple minute sub', '+-1min'),
+    ])
+    def test_simple_invalid_expressions_are_invalid(self, name, expression):
+        timewarp_obj = Timewarp('')
+        self.assertFalse(timewarp_obj.is_valid_expression(expression))
+
+    @parameterized.expand([
+        ('bad compound year snap month snap', '@ymon+1w'),
+        ('bad compound day snap hour snap', '@@dh+1w'),
+        ('bad compound day snap invalid char', '@d+1w+2z'),
+    ])
+    def test_invalid_compound_expressions_are_invalid(self, name, expression):
+        timewarp_obj = Timewarp('')
+        self.assertFalse(timewarp_obj.is_valid_expression(expression))

@@ -1,7 +1,8 @@
 # Timewarp
 
 Timewarp is a wrapper for the headaches of `datetime`. It relies heavily on
-`python-dateutil` and `datetime` itself.
+`python-dateutil` and `datetime` itself. Supports Python3.6+ and can be
+installed from pip with `python3 -m pip install timewarp`.
 
 
 ## Usage
@@ -26,6 +27,8 @@ The following table denotes what primitive keywords `Timewarp` understands:
 Some examples:
 
 ```py
+from timewarp.timewarp import Timewarp
+
 Timewarp('@y')  # The start of the current year.
 Timewarp('@mon')  # The start (midnight of day 1) of the current month.
 ```

@@ -31,6 +31,10 @@ class IsValidExpressionTest(TestCase):
         timewarp_obj = Timewarp('')
         self.assertTrue(timewarp_obj.is_valid_expression(expression))
 
+    def test_wrong_type_is_invalid(self):
+        with self.assertRaises(Exception):
+            Timewarp(1234)
+
     @parameterized.expand([
         ('compound year snap month snap', '@y@mon'),
         ('compound day snap hour snap', '@d@h'),

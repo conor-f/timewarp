@@ -1,9 +1,7 @@
 import re
 
-from datetime import (
-    datetime,
-    timedelta
-)
+from datetime import datetime
+from dateutil.relativedelta import relativedelta, MO
 
 
 class Timewarp():
@@ -79,6 +77,62 @@ class Timewarp():
 
         return True
 
+    def update_component(self, c):
+        '''
+        Given a component of an expression, update the current time object.
+        of it.
+        '''
+        if c[0] == '+' or c[0] == '-':
+            if c[-1] == 's':
+                self.current_time_obj += relativedelta(seconds=int(c[:-1]))
+            elif c[-1] == 'm':
+                self.current_time_obj += relativedelta(minutes=int(c[:-1]))
+            elif c[-1] == 'h':
+                self.current_time_obj += relativedelta(hours=int(c[:-1]))
+            elif c[-1] == 'd':
+                self.current_time_obj += relativedelta(days=int(c[:-1]))
+            elif c[-1] == 'w':
+                self.current_time_obj += relativedelta(weeks=int(c[:-1]))
+            elif c[-1] == 'n':  # Special case for months.
+                self.current_time_obj += relativedelta(months=int(c[:-3]))
+            elif c[-1] == 'y':
+                self.current_time_obj += relativedelta(years=int(c[:-1]))
+
+        elif c[0] == '@':
+            if c[-1] == 's':
+                self.current_time_obj = self.current_time_obj.replace(
+                    microsecond=0
+                )
+            elif c[-1] == 'm':
+                self.current_time_obj = self.current_time_obj.replace(
+                    second=0
+                )
+                self.update_component('@s')
+            elif c[-1] == 'h':
+                self.current_time_obj = self.current_time_obj.replace(
+                    minute=0
+                )
+                self.update_component('@m')
+            elif c[-1] == 'd':
+                self.current_time_obj = self.current_time_obj.replace(
+                    hour=0
+                )
+                self.update_component('@h')
+            elif c[-1] == 'w':
+                # Special case for weeks:
+                self.current_time_obj += relativedelta(weekday=MO(-1))
+                self.update_component('@d')
+            elif c[-1] == 'n':  # Special condition for months.
+                self.current_time_obj = self.current_time_obj.replace(
+                    day=1
+                )
+                self.update_component('@d')
+            elif c[-1] == 'y':
+                self.current_time_obj = self.current_time_obj.replace(
+                    month=1
+                )
+                self.update_component('@mon')
+
     def update(self, time_expression):
         '''
         Given a Timewarp expression, update self.current_time_obj with that
@@ -88,8 +142,11 @@ class Timewarp():
         :raises: Yes. (TODO)
         '''
         if not self.is_valid_expression(time_expression):
-            raise InvalidTimewarpExpressionException(
+            raise Exception(
                 f'Expression {time_expression} is invalid.'
             )
 
-        pass
+        components = self.split_expression(time_expression)
+
+        for c in components:
+            self.update_component(c)

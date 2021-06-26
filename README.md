@@ -1,6 +1,7 @@
 # Timewarp
 
-Timewarp is a wrapper for the headaches of `datetime`.
+Timewarp is a wrapper for the headaches of `datetime`. It relies heavily on
+`python-dateutil` and `datetime` itself.
 
 
 ## Usage
@@ -46,19 +47,13 @@ Timewarp('@y+3mon')  # The 1st of March of this year.
 Timewarp('@y+6mon+23d')  # Midnight of the 23rd of June this year.
 ```
 
-TODO: Document how to pull it back out of `Timewarp` into epoch seconds and
-`datetime` objects.
-
+To get a native `datetime` object from a `Timewarp`, simply do:
+```py
+t = Timewarp('-6w@w')
+d = t.to_datetime()
+```
 
 # Further Usage
-
- - The `w` primitive can also be combined with numeric values for greater
-specificity:
-
-```py
-Timewarp('@w0')  # Snap back to the most recent day 0 (Sunday).
-Timewarp('@w4')  # Snap back to the most recent day 4 (Thursday).
-```
 
  - `Timewarp` is conceptually subtractive (i.e. it revolves around the current
    time and applying modifications). You can also easily make it additive:
@@ -68,5 +63,5 @@ Timewarp('+2000y+8mon', additive=True)  # 01/08/2000 00:00:00
 
  - `Timewarp` also supports pytz timezones:
 ```py
-Timewarp('@w1', timezone=pytz.GMT)  # The most recent Monday, GMT specific.
+Timewarp('@w', timezone=pytz.GMT)  # The most recent Monday, GMT specific.
 ```

@@ -4,12 +4,13 @@ from setuptools import (
 )
 
 INSTALL_REQUIRES = [
+    'python-dateutil'
 ]
 
 setup(
     name='timewarp',
     description='datetime wrapper that allows you to specify datetimes using a succinct shorthand.',
-    version='0.0.1',
+    version='0.0.2',
     url='https://github.com/conor-f/timewarp',
     python_requires='>=3.6',
     packages=find_packages('src'),

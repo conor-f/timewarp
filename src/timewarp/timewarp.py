@@ -150,3 +150,9 @@ class Timewarp():
 
         for c in components:
             self.update_component(c)
+
+    def to_datetime(self):
+        '''
+        Returns the datetime representation of this Timewarp object.
+        '''
+        return self.current_time_obj

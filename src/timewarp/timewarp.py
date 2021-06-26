@@ -18,6 +18,23 @@ class Timewarp():
         self.current_time_obj = datetime(1, 1, 1) if additive else datetime.now()
         self.update(expression)
 
+    def split_expression(self, expression):
+        '''
+        Given a Timewarp expression, return a list of strings that compose the
+        expression.
+        :param expression: The string Timewarp expression.
+        :returns: list str
+        '''
+        components = ['']
+
+        for char in expression[::-1]:
+            components[-1] = char + components[-1]
+
+            if char in ['@', '+', '-']:
+                components.append('')
+
+        return components[:-1][::-1]
+
     def is_valid_expression(self, expression):
         '''
         Given a Timewarp expression, return True if it is valid, False

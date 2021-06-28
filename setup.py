@@ -10,7 +10,7 @@ INSTALL_REQUIRES = [
 setup(
     name='timewarp',
     description='datetime wrapper that allows you to specify datetimes using a succinct shorthand.',
-    version='0.0.2',
+    version='0.0.3',
     url='https://github.com/conor-f/timewarp',
     python_requires='>=3.6',
     packages=find_packages('src'),

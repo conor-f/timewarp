@@ -49,7 +49,6 @@ class IsValidExpressionTest(TestCase):
     @parameterized.expand([
         ('bad simple year snap', '@-y'),
         ('bad simple month snap', '-@mon'),
-        ('bad simple week snap', 'w@w'),
         ('bad simple day snap', '@dd'),
         ('bad simple second add', '++1s'),
         ('bad simple minute sub', '+-1min'),

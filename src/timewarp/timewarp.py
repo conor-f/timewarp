@@ -1,7 +1,16 @@
 import re
 
 from datetime import datetime
-from dateutil.relativedelta import relativedelta, MO
+from dateutil.relativedelta import (
+    relativedelta,
+    MO,
+    TU,
+    WE,
+    TH,
+    FR,
+    SA,
+    SU
+)
 
 
 class Timewarp():
@@ -58,20 +67,12 @@ class Timewarp():
             r'^[+-]\d+' + valid_keyword + '$' for valid_keyword in valid_keywords
         ])
 
+        # Special case for snapping to a specific weekday. e.g. @w4
+        valid_base_patterns.extend([r'^@w[\d]$'])
+
         valid_base_regex = '|'.join(valid_base_patterns)
 
-        expression_parts = re.split(r'([+@-])', expression)
-        expression_parts = [part for part in expression_parts if part != '']
-
-        parsed_expression = [
-            ''.join(expression_parts[i:i + 2]) for i in range(
-                0,
-                len(expression_parts),
-                2
-            )
-        ]
-
-        for part in parsed_expression:
+        for part in self.split_expression(expression):
             if not re.match(valid_base_regex, part):
                 return False
 
@@ -121,6 +122,25 @@ class Timewarp():
             elif c[-1] == 'w':
                 # Special case for weeks:
                 self.current_time_obj += relativedelta(weekday=MO(-1))
+                self.update_component('@d')
+            elif c[-2] == 'w':
+                # Special case for weeks:
+                if c[-1] == '0':
+                    self.current_time_obj += relativedelta(weekday=SU(-1))
+                elif c[-1] == '1':
+                    self.current_time_obj += relativedelta(weekday=MO(-1))
+                elif c[-1] == '2':
+                    self.current_time_obj += relativedelta(weekday=TU(-1))
+                elif c[-1] == '3':
+                    self.current_time_obj += relativedelta(weekday=WE(-1))
+                elif c[-1] == '4':
+                    self.current_time_obj += relativedelta(weekday=TH(-1))
+                elif c[-1] == '5':
+                    self.current_time_obj += relativedelta(weekday=FR(-1))
+                elif c[-1] == '6':
+                    self.current_time_obj += relativedelta(weekday=SA(-1))
+                elif c[-1] == '7':
+                    self.current_time_obj += relativedelta(weekday=SU(-1))
                 self.update_component('@d')
             elif c[-1] == 'n':  # Special condition for months.
                 self.current_time_obj = self.current_time_obj.replace(

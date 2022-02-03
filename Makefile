@@ -42,3 +42,21 @@ test: setup build test_requirements quick_test
 quick_test:
 	$(IN_ENV) $(TEST_CONTEXT) python `which nosetests` -q -s tests/ --with-coverage --cover-erase --cover-package=src
 	$(IN_ENV) coverage report -m
+
+
+# CI Specific Rules:
+ci_upload_pip: ci_test
+	$(PYTHON) -m pip install --user twine
+	twine upload --repository-url https://upload.pypi.org/legacy/ dist/*
+
+ci_test: ci_build
+	$(TEST_CONTEXT) `which nosetests` --with-coverage --cover-package=timewarp --cover-erase
+	`which coverage` report -m
+	`which coverage` html
+
+ci_build:
+	$(PYTHON) -m pip install --upgrade pip
+	$(PYTHON) -m pip install --user --upgrade -r requirements.txt
+	$(PYTHON) -m pip install --user --editable .
+	rm -fr dist/
+	$(PYTHON) setup.py sdist

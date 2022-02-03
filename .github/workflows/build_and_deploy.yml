@@ -29,7 +29,7 @@ jobs:
 
     - name: Build and Test
       run: |
-        make quick_test
+        make ci_test
 
   deploy:
     name: Deploy
@@ -54,4 +54,4 @@ jobs:
 
     - name: Build, Test and Deploy
       run: |
-        make upload_pip
+        make ci_upload_pip

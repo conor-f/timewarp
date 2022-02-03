@@ -40,7 +40,7 @@ requirements:
 test: setup build test_requirements quick_test
 
 quick_test:
-	$(IN_ENV) $(TEST_CONTEXT) python `which nosetests` -q -s tests/ --with-coverage --cover-erase --cover-package=src
+	$(IN_ENV) $(TEST_CONTEXT) python `which nosetests` -q -s tests/ --with-coverage --cover-erase --cover-package=timewarp
 	$(IN_ENV) coverage report -m
 
 
@@ -50,9 +50,7 @@ ci_upload_pip: ci_test
 	twine upload --repository-url https://upload.pypi.org/legacy/ dist/*
 
 ci_test: ci_build
-	$(TEST_CONTEXT) `which nosetests` --with-coverage --cover-package=timewarp --cover-erase
-	`which coverage` report -m
-	`which coverage` html
+	$(TEST_CONTEXT) python `which nosetests` tests/ --with-coverage --cover-package=timewarp --cover-erase
 
 ci_build:
 	$(PYTHON) -m pip install --upgrade pip

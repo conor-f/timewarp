@@ -50,7 +50,8 @@ ci_upload_pip: ci_test
 	twine upload --repository-url https://upload.pypi.org/legacy/ dist/*
 
 ci_test: ci_build
-	$(TEST_CONTEXT) python `which nosetests` tests/ --with-coverage --cover-package=timewarp --cover-erase
+	$(PYTHON) -m pip install --user --upgrade -r test_requirements.txt
+	$(TEST_CONTEXT) $(PYTHON) `which nosetests` tests/ --with-coverage --cover-package=timewarp --cover-erase
 
 ci_build:
 	$(PYTHON) -m pip install --upgrade pip

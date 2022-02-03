@@ -51,7 +51,7 @@ ci_upload_pip: ci_test
 
 ci_test: ci_build
 	$(PYTHON) -m pip install --user --upgrade -r test_requirements.txt
-	$(TEST_CONTEXT) $(PYTHON) `which nosetests` tests/ --with-coverage --cover-package=timewarp --cover-erase
+	$(TEST_CONTEXT) `which nosetests` --with-coverage --cover-package=timewarp --cover-erase
 
 ci_build:
 	$(PYTHON) -m pip install --upgrade pip

@@ -14,15 +14,26 @@ from dateutil.relativedelta import (
 
 
 class Timewarp():
-    def __init__(self, expression, additive=False, timezone='UTC'):
+    def __init__(
+        self,
+        expression,
+        start_datetime=None,
+        additive=False,
+        timezone='UTC'
+    ):
         '''
         Constructor for a Timewarp object.
         :param expression: The string describing the Timewarp object.
+        :kwarg start_datetime: A datetime object of the point to start from.
         :kwarg additive: Boolean to specify if we should start from 01/01/0001
                          or not. Default False.
         :kwarg timezone: TODO: Should be pytz timezone object.
         '''
         self.current_time_obj = datetime(1, 1, 1) if additive else datetime.now()
+
+        if type(start_datetime) is datetime:
+            self.current_time_obj = start_datetime
+
         self.update(expression)
 
     def split_expression(self, expression):

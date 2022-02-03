@@ -12,6 +12,18 @@ class UpdateComponentTest(TestCase):
 
         self.assertTrue(timewarp_obj.is_valid_expression(expression))
 
+    def test_from_timestamp(self):
+        init_time = 1234567860
+        timewarp_obj = Timewarp(
+            '-1m',
+            start_datetime=datetime.fromtimestamp(init_time)
+        )
+
+        self.assertEqual(
+            timewarp_obj.to_datetime().timestamp(),
+            init_time - 60
+        )
+
     def test_update_component(self):
         timewarp_obj = Timewarp('', additive=True)
 
